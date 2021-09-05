@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import shortid from "shortid";
 import { ContactForm } from "./Components/ContactForm/ContactForm.jsx";
 import { ContactList } from "./Components/ContactList/ContactList.jsx";
-// import { Filter } from "./Components/Filter/Filter.jsx";
+import { Filter } from "./Components/Filter/Filter.jsx";
 
 export class App extends Component {
   state = {
@@ -45,16 +45,30 @@ export class App extends Component {
     }));
   };
 
+  onFilterInputValue = (e) => {
+    this.setState({ filter: e.target.value });
+  };
+
+  onFilteredContacts = () => {
+    const { filter, contacts } = this.state;
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  };
+
   render() {
-    const { contacts } = this.state;
+    const { filter } = this.state;
     return (
       <div>
         <h1>Phonebook</h1>
         <ContactForm onSubmit={this.addContact} />
 
         <h2>Contacts</h2>
-        {/* <Filter value={filter} onFilter={this.onFilter} /> */}
-        <ContactList contacts={contacts} onDeleteContact={this.deleteContacs} />
+        <Filter value={filter} onFilterInputValue={this.onFilterInputValue} />
+        <ContactList
+          contacts={this.onFilteredContacts()}
+          onDeleteContact={this.deleteContacs}
+        />
       </div>
     );
   }
